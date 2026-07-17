@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sukamara| Driver Center Sukamara</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        * { 
+            box-sizing: border-box; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+        }
+        body { 
+            background-color: #f6f6f6; 
+            color: #222222; 
+            padding: 0;
+            display: flex; 
+            justify-content: center; 
+        }
+        
+        #driver-panel { 
+            width: 100%; 
+            max-width: 450px; 
+            min-height: 100vh;
+            background: #f6f6f6; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.05); 
+            padding-bottom: 30px;
+            position: relative;
+        }
+
+        /* Shopee Header */
+        .shopee-header {
+            background: linear-gradient(180deg, #ff5722 0%, #ee4d2d 100%); 
+            color: white;
+            padding: 20px 16px 30px 16px;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+        }
+        .brand { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            margin-bottom: 20px; 
+        }
+        .brand-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .brand-left i { 
+            color: white; 
+            font-size: 1.6rem; 
+        }
+        .brand h2 { 
+            font-weight: 700; 
+            font-size: 1.3rem; 
+            letter-spacing: 0.3px;
+        }
+        .brand-right-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .brand-subtitle {
+            font-size: 0.75rem;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+        .btn-admin-gate {
+            background: rgba(0,0,0,0.15);
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+        .btn-admin-gate:hover {
+            background: rgba(0,0,0,0.3);
+        }
+
+        /* Profile Widget */
+        .profile-widget { 
+            background: white; 
+            padding: 16px; 
+            border-radius: 12px; 
+            margin: -15px 16px 15px 16px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            max-width: 55%;
+        }
+        .profile-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #ffeae6;
+            color: #ee4d2d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+            overflow: hidden;
+            border: 2px solid #ee4d2d;
+            flex-shrink: 0;
+        }
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .profile-text h4 { 
+            font-size: 0.95rem; 
+            color: #222; 
+            font-weight: 700; 
+            word-break: break-all;
+        }
+        .profile-text p { 
+            font-size: 0.75rem; 
+            color: #757575; 
+            margin-top: 2px; 
+        }
+        .profile-text .nik-badge {
+            font-size: 0.7rem;
+            background-color: #f1f5f9;
+            color: #475569;
+            padding: 1px 6px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 4px;
+            font-family: monospace;
+        }
+        .profile-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .btn-widget { 
+            padding: 6px 10px; 
+            background: white; 
+            color: #ee4d2d; 
+            border: 1px solid #ee4d2d; 
+            border-radius: 4px; 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            cursor: pointer; 
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            justify-content: center;
+        }
+        .btn-widget:hover {
+            background: #ffeae6;
+        }
+        .btn-history-trigger {
+            color: #4b5563;
+            border-color: #d1d5db;
+        }
+        .btn-history-trigger:hover {
+            background: #f3f4f6;
+        }
+
+        /* Audio Permission Banner */
+        .audio-banner {
+            background-color: #ffeae6;
+            color: #ee4d2d;
+            margin: 0 16px 12px 16px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #ffdbd4;
+        }
+        .audio-banner button {
+            background: #ee4d2d;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Shopee Card Base */
+        .shopee-card {
+            background: white;
+            margin: 0 16px 12px 16px;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        /* Tarif Settings Box */
+        .tarif-title { 
+            font-size: 0.85rem; 
+            font-weight: 700; 
+            color: #222; 
+            margin-bottom: 12px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+        .tarif-title i {
+            color: #ee4d2d;
+        }
+        .tarif-grid { 
+            display: flex; 
+            gap: 12px; 
+        }
+        .tarif-field { 
+            flex: 1; 
+        }
+        .tarif-field label { 
+            display: block; 
+            font-size: 0.75rem; 
+            color: #757575; 
+            font-weight: 600; 
+            margin-bottom: 4px; 
+        }
+        .tarif-field input { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #e8e8e8; 
+            border-radius: 6px; 
+            font-size: 0.85rem; 
+            outline: none; 
+            background: #fafafa; 
+            font-weight: 700; 
+            color: #ee4d2d;
+        }
+        .tarif-field input:focus {
+            border-color: #ee4d2d;
+            background: white;
+        }
+
+        /* Status Online */
+        .status-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .status-badge { 
+            display: inline-flex; 
+            align-items: center;
+            gap: 6px;
+            padding: 6px 16px; 
+            background-color: #e6f9f0; 
+            color: #00b159; 
+            border-radius: 20px; 
+            font-size: 0.8rem; 
+            font-weight: 700; 
+            border: 1px solid #b3f0d0;
+        }
+        
+        /* Order Card */
+        .order-card { 
+            display: none; 
+            border-top: 4px solid #ee4d2d;
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #e8e8e8;
+        }
+        .order-header strong { 
+            font-size: 1rem; 
+            color: #ee4d2d; 
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .info-row { 
+            margin-bottom: 12px; 
+            font-size: 0.85rem; 
+            color: #757575; 
+            line-height: 1.4; 
+        }
+        .info-row span b { 
+            color: #222; 
+        }
+        .alamat-box { 
+            background: #f9f9f9; 
+            padding: 10px; 
+            border: 1px solid #f0f0f0; 
+            border-radius: 6px; 
+            margin-top: 4px; 
+            display: block; 
+            color: #222; 
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+
+        /* Revenue Box */
+        .driver-revenue { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            background: #fff5f2; 
+            padding: 12px 16px; 
+            border-radius: 8px; 
+            margin-top: 15px; 
+            border: 1px solid #ffdbd4; 
+        }
+        .revenue-title { 
+            font-weight: 600; 
+            color: #ee4d2d; 
+            font-size: 0.8rem; 
+        }
+        .revenue-value { 
+            font-weight: 800; 
+            color: #ee4d2d; 
+            font-size: 1.2rem; 
+        }
+
+        /* Shopee Buttons */
+        .btn { 
+            width: 100%; 
+            padding: 14px; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            font-size: 0.95rem; 
+            font-weight: 700; 
+            cursor: pointer; 
+            margin-top: 12px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px;
+            transition: opacity 0.2s;
+        }
+        .btn:active {
+            opacity: 0.8;
+        }
+        #btn-accept { 
+            background-color: #ee4d2d; 
+        }
+        #btn-complete { 
+            background-color: #00b159; 
+            display: none; 
+        }
+        
+        #btn-clear-drivers { 
+            background: none; 
+            border: none; 
+            color: #757575; 
+            font-size: 0.75rem; 
+            cursor: pointer; 
+            text-decoration: underline; 
+            width: 100%; 
+            margin-top: 15px; 
+            font-weight: 500;
+        }
+        #no-order-txt { 
+            text-align: center; 
+            color: #757575; 
+            font-size: 0.85rem; 
+            padding: 40px 0; 
+        }
+
+        /* Shopee Modal */
+        .modal-overlay { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0, 0, 0, 0.5); 
+            z-index: 2000; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            opacity: 0; 
+            pointer-events: none; 
+            transition: all 0.3s ease; 
+        }
+        .modal-overlay.active { 
+            opacity: 1; 
+            pointer-events: auto; 
+        }
+        .modal-content { 
+            background: white; 
+            padding: 20px 24px; 
+            border-radius: 12px; 
+            width: 93%; 
+            max-width: 400px; 
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-content h3 {
+            color: #222;
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal-content h3 i {
+            color: #ee4d2d;
+        }
+        .form-field { 
+            margin-bottom: 12px; 
+        }
+        .form-field label { 
+            display: block; 
+            font-size: 0.75rem; 
+            font-weight: 600; 
+            color: #757575; 
+            margin-bottom: 6px; 
+        }
+        .form-field input, .form-field select { 
+            width: 100%; 
+            padding: 10px 12px; 
+            border: 1px solid #e8e8e8; 
+            border-radius: 6px; 
+            outline: none; 
+            font-size: 0.9rem; 
+            background: #fafafa;
+        }
+        .form-field input:focus, .form-field select:focus {
+            border-color: #ee4d2d;
+            background: white;
+        }
+        
+        /* Upload Photo Box */
+        .photo-upload-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #fafafa;
+            padding: 8px;
+            border: 1px dashed #cbd5e1;
+            border-radius: 6px;
+        }
+        .photo-preview-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid #cbd5e1;
+            flex-shrink: 0;
+        }
+        .photo-preview-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-preview-box i {
+            color: #94a3b8;
+            font-size: 1.2rem;
+        }
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+        .btn-upload-file {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .file-input-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .modal-buttons { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 20px; 
+        }
+        .btn-modal { 
+            flex: 1; 
+            padding: 12px; 
+            border-radius: 6px; 
+            font-weight: 700; 
+            font-size: 0.9rem; 
+            cursor: pointer; 
+            border: none; 
+        }
+        .btn-save { 
+            background: #ee4d2d; 
+            color: white; 
+        }
+        .btn-cancel { 
+            background: #f5f5f5; 
+            color: #555; 
+        }
+
+        /* Items History Style */
+        .history-item {
+            background: #f9f9f9;
+            border: 1px solid #e8e8e8;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+        }
+        .history-item div {
+            margin-bottom: 4px;
+        }
+        .history-item strong {
+            color: #ee4d2d;
+        }
+
+        /* Admin Table Style */
+        .admin-table-wrapper {
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+            text-align: left;
+        }
+        .admin-table th, .admin-table td {
+            border: 1px solid #e2e8f0;
+            padding: 8px;
+        }
+        .admin-table th {
+            background: #f1f5f9;
+            font-weight: 700;
+        }
+        .btn-delete-driver {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 2px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Panel -->
+    <div id="driver-panel">
+        
+        <!-- Shopee Header Section -->
+        <div class="shopee-header">
+            <div class="brand">
+                <div class="brand-left">
+                    <i class="fa-solid fa-store"></i>
+                    <h2>sukma driver</h2>
+                </div>
+                <div class="brand-right-actions">
+                    <span class="brand-subtitle">Sukamara</span>
+                    <button class="btn-admin-gate" title="Login Admin" onclick="bukaLoginAdmin()">
+                        <i class="fa-solid fa-lock"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shopee Profile Widget -->
+        <div class="profile-widget">
+            <div class="profile-info">
+                <div class="profile-avatar" id="profile-avatar-char">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="profile-text">
+                    <h4 id="profile-name">Driver Tamu</h4>
+                    <p id="profile-vehicle">Belum Masuk/Daftar</p>
+                    <span id="profile-nik" class="nik-badge" style="display:none;">NIK: -</span>
+                </div>
+            </div>
+            <div class="profile-actions">
+                <button class="btn-widget" onclick="toggleModal(true)">
+                    <i class="fa-solid fa-user-gear"></i> Akun
+                </button>
+                <button class="btn-widget btn-history-trigger" onclick="bukaModalRiwayat()">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Riwayat
+                </button>
+            </div>
+        </div>
+
+        <!-- Banner Izin Audio -->
+        <div class="audio-banner" id="audio-activation-banner">
+            <span>📢 Aktifkan suara dering di HP?</span>
+            <button onclick="aktifkanFiturSuara()">Aktifkan</button>
+        </div>
+
+        <!-- Shopee Status Online -->
+        <div class="status-container">
+            <div class="status-badge" id="driver-status">
+                <i class="fa-solid fa-circle-check"></i> ONLINE & SIAP KERJA
+            </div>
+        </div>
+
+        <!-- Tarif Settings Box -->
+        <div class="shopee-card">
+            <div class="tarif-title">
+                <i class="fa-solid fa-tags"></i> Atur Tarif Jasa per KM (Rp)
+            </div>
+            <div class="tarif-grid">
+                <div class="tarif-field">
+                    <label>Tarif Motor</label>
+                    <input type="number" id="driver-set-motor" value="10000" oninput="perbaruiTarifSistem()">
+                </div>
+                <div class="tarif-field">
+                    <label>Tarif Mobil</label>
+                    <input type="number" id="driver-set-mobil" value="20000" oninput="perbaruiTarifSistem()">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Order Box -->
+        <div id="order-box" class="shopee-card order-card">
+            <div class="order-header">
+                <strong><i class="fa-solid fa-bell fa-bounce"></i> Pesanan Baru Masuk!</strong>
+            </div>
+            
+            <div class="info-row"><span>Tipe Layanan: <b id="txt-kendaraan">-</b></span></div>
+            <div class="info-row"><span>No. HP Penumpang: <b id="txt-nohp">-</b></span></div>
+            <div class="info-row"><span>Titik Penjemputan:</span><span class="alamat-box" id="txt-jemput">-</span></div>
+            <div class="info-row"><span>Alamat Tujuan:</span><span class="alamat-box" id="txt-tujuan">-</span></div>
+            <div class="info-row"><span>Estimasi Jarak Tempuh: <b id="txt-jarak">-</b></span></div>
+            
+            <div class="driver-revenue">
+                <span class="revenue-title">Pendapatan Bersih</span>
+                <span class="revenue-value" id="txt-tarif">Rp 0</span>
+            </div>
+
+            <button id="btn-accept" class="btn" onclick="terimaOrderan()">Terima & Antar</button>
+            <button id="btn-complete" class="btn" onclick="selesaikanOrderan()">Pesanan Selesai Sampai Tujuan</button>
+        </div>
+        
+        <!-- Loader / Menunggu -->
+        <div id="no-order-txt">
+            <i class="fa-solid fa-spinner fa-spin" style="color: #ee4d2d; font-size: 1.2rem; margin-bottom: 10px;"></i>
+            <p>Mencari pesanan terdekat...</p>
+        </div>
+
+        <button id="btn-clear-drivers" onclick="hapusSemuaDriverLokal()">⚠️ Bersihkan Memori Cache</button>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="register-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3><i class="fa-solid fa-user-plus"></i> Daftar Akun sukmaDriver</h3>
+            
+            <div class="form-field">
+                <label>Foto Profil Driver</label>
+                <div class="photo-upload-container">
+                    <div class="photo-preview-box" id="modal-photo-preview">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="file-input-wrapper">
+                        <button class="btn-upload-file">Pilih Foto</button>
+                        <input type="file" id="reg-foto" accept="image/*" onchange="previewImage(this)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-field">
+                <label>Nomor Induk Kependudukan (NIK KTP)</label>
+                <input type="number" id="reg-nik" placeholder="16 Digit NIK KTP Anda" oninput="limitNIKLength(this)">
+            </div>
+
+            <div class="form-field">
+                <label>Nama Lengkap</label>
+                <input type="text" id="reg-nama" placeholder="Contoh: Bang Roni">
+            </div>
+            <div class="form-field">
+                <label>Nomor HP Aktif</label>
+                <input type="tel" id="reg-nohp" placeholder="Contoh: 0852xxxx">
+            </div>
+            <div class="form-field">
+                <label>Nomor Plat Kendaraan</label>
+                <input type="text" id="reg-plat" placeholder="Contoh: KH 3314 AA">
+            </div>
+            <div class="form-field">
+                <label>Jenis Transportasi</label>
+                <select id="reg-kendaraan">
+                    <option value="Motor">Sepeda Motor</option>
+                    <option value="Mobil">Mobil / Roda 4</option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-modal btn-cancel" onclick="toggleModal(false)">Batal</button>
+                <button class="btn-modal btn-save" onclick="simpanPendaftaran()">Daftar Sekarang</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Riwayat Perjalanan Modal -->
+    <div id="history-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Perjalanan Saya</h3>
+            <div id="history-list-container" style="max-height: 50vh; overflow-y: auto; margin-bottom: 15px;">
+                <!-- Item riwayat masuk lewat JS -->
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-modal btn-cancel" onclick="tutupModalRiwayat()">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div id="admin-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 430px; width: 95%;">
+            <h3><i class="fa-solid fa-user-shield"></i> Dashboard Panel Admin</h3>
+            <p style="font-size: 0.8rem; color: #666; margin-bottom: 12px;">Daftar pengemudi terdaftar di sistem lokal:</p>
+            
+            <div class="admin-table-wrapper">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>NIK</th>
+                            <th>Armada</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-driver-list">
+                        <!-- List Driver diisi via JS -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="btn-modal btn-cancel" onclick="tutupPanelAdmin()">Keluar Admin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logic Script -->
+    <script>
+        let driverAktifSesiIni = "Driver Tamu";
+        let tempFotoBase64 = ""; 
+        let soundInterval = null; 
+        let audioCtx = null; 
+
+        // Mendaftarkan Service Worker agar aplikasi bisa di-download & offline
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('Service Worker terdaftar!', reg))
+            .catch(err => console.log('Gagal mendaftar Service Worker', err));
+    });
+}
+
+        // Inisialisasi Audio Engine
+        function aktifkanFiturSuara() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            document.getElementById('audio-activation-banner').style.display = 'none';
+            bunyiDeringPing();
+        }
+
+        // Telolet Ping Generator
+        function bunyiDeringPing() {
+            try {
+                if (!audioCtx) return;
+                
+                let osc1 = audioCtx.createOscillator();
+                let gain1 = audioCtx.createGain();
+                osc1.connect(gain1);
+                gain1.connect(audioCtx.destination);
+                
+                osc1.type = 'sine';
+                osc1.frequency.setValueAtTime(880, audioCtx.currentTime); 
+                osc1.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.3); 
+                
+                gain1.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain1.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3); 
+                
+                osc1.start(audioCtx.currentTime);
+                osc1.stop(audioCtx.currentTime + 0.3);
+
+                setTimeout(() => {
+                    let osc2 = audioCtx.createOscillator();
+                    let gain2 = audioCtx.createGain();
+                    osc2.connect(gain2);
+                    gain2.connect(audioCtx.destination);
+                    
+                    osc2.type = 'sine';
+                    osc2.frequency.setValueAtTime(1200, audioCtx.currentTime); 
+                    gain2.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                    gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                    
+                    osc2.start(audioCtx.currentTime);
+                    osc2.stop(audioCtx.currentTime + 0.2);
+                }, 150);
+
+            } catch (e) {
+                console.log("Audio Error:", e);
+            }
+        }
+
+        function mulaiPutarSuaraDering() {
+            if (soundInterval === null) {
+                bunyiDeringPing();
+                soundInterval = setInterval(() => {
+                    bunyiDeringPing();
+                }, 1200); 
+            }
+        }
+
+        function stopSuaraDering() {
+            if (soundInterval !== null) {
+                clearInterval(soundInterval);
+                soundInterval = null;
+            }
+        }
+
+        function muatTarifAwal() {
+            document.getElementById('driver-set-motor').value = localStorage.getItem('config_tarif_motor') || "10000";
+            document.getElementById('driver-set-mobil').value = localStorage.getItem('config_tarif_mobil') || "20000";
+        }
+
+        function perbaruiTarifSistem() {
+            localStorage.setItem('config_tarif_motor', document.getElementById('driver-set-motor').value || "0");
+            localStorage.setItem('config_tarif_mobil', document.getElementById('driver-set-mobil').value || "0");
+            periksaOrderanMasuk(); 
+        }
+
+        function limitNIKLength(element) {
+            if (element.value.length > 16) {
+                element.value = element.value.slice(0, 16);
+            }
+        }
+
+        function previewImage(input) {
+            const file = input.files[0];
+            if (file) {
+                if (file.size > 1024 * 1024) {
+                    alert("Ukuran gambar terlalu besar! Maksimal ukuran adalah 1MB.");
+                    input.value = "";
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    tempFotoBase64 = e.target.result;
+                    document.getElementById('modal-photo-preview').innerHTML = `<img src="${tempFotoBase64}">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function toggleModal(show) {
+            document.getElementById('register-modal').classList.toggle('active', show);
+            aktifkanFiturSuara();
+            
+            if (show) {
+                document.getElementById('reg-nik').value = "";
+                document.getElementById('reg-nama').value = "";
+                document.getElementById('reg-nohp').value = "";
+                document.getElementById('reg-plat').value = "";
+                document.getElementById('modal-photo-preview').innerHTML = `<i class="fa-solid fa-user"></i>`;
+                tempFotoBase64 = "";
+
+                const namaSesi = localStorage.getItem('sesi_driver_nama');
+                const dataDaftarRaw = localStorage.getItem('daftar_driver_sukamara');
+                if (namaSesi && dataDaftarRaw) {
+                    const profilSaya = JSON.parse(dataDaftarRaw).find(d => d.nama.toLowerCase() === namaSesi.toLowerCase());
+                    if (profilSaya) {
+                        document.getElementById('reg-nik').value = profilSaya.nik || "";
+                        document.getElementById('reg-nama').value = profilSaya.nama;
+                        document.getElementById('reg-nohp').value = profilSaya.nohp;
+                        document.getElementById('reg-plat').value = profilSaya.plat;
+                        document.getElementById('reg-kendaraan').value = profilSaya.kendaraan;
+                        if (profilSaya.foto) {
+                            tempFotoBase64 = profilSaya.foto;
+                            document.getElementById('modal-photo-preview').innerHTML = `<img src="${profilSaya.foto}">`;
+                        }
+                    }
+                }
+            }
+        }
+
+        function simpanPendaftaran() {
+            const nik = document.getElementById('reg-nik').value.trim();
+            const nama = document.getElementById('reg-nama').value.trim();
+            const nohp = document.getElementById('reg-nohp').value.trim();
+            const plat = document.getElementById('reg-plat').value.trim();
+            const kendaraan = document.getElementById('reg-kendaraan').value;
+
+            if (!nik || !nama || !nohp || !plat) { 
+                alert("Mohon lengkapi semua data pendaftaran!"); 
+                return; 
+            }
+            if (nik.length !== 16) {
+                alert("NIK KTP tidak valid! Harus tepat 16 digit angka.");
+                return;
+            }
+
+            let daftarDriver = JSON.parse(localStorage.getItem('daftar_driver_sukamara')) || [];
+            daftarDriver = daftarDriver.filter(d => d.nama.toLowerCase() !== nama.toLowerCase());
+            
+            daftarDriver.push({ 
+                nik, nama, nohp, plat, kendaraan, foto: tempFotoBase64 
+            });
+            
+            localStorage.setItem('daftar_driver_sukamara', JSON.stringify(daftarDriver));
+            localStorage.setItem('sesi_driver_nama', nama);
+            
+            toggleModal(false);
+            muatProfilDriver();
+            periksaOrderanMasuk();
+            
+            alert(`Pendaftaran Akun Shopee Driver Berhasil!\nSelamat datang, ${nama}!`);
+        }
+
+        function muatProfilDriver() {
+            const namaSesi = localStorage.getItem('sesi_driver_nama');
+            const dataDaftarRaw = localStorage.getItem('daftar_driver_sukamara');
+            
+            if (namaSesi && dataDaftarRaw) {
+                const profilSaya = JSON.parse(dataDaftarRaw).find(d => d.nama.toLowerCase() === namaSesi.toLowerCase());
+                if (profilSaya) {
+                    driverAktifSesiIni = profilSaya.nama;
+                    document.getElementById('profile-name').innerText = profilSaya.nama;
+                    document.getElementById('profile-vehicle').innerText = `${profilSaya.kendaraan} - ${profilSaya.plat}`;
+                    
+                    const nikBadge = document.getElementById('profile-nik');
+                    nikBadge.style.display = "inline-block";
+                    nikBadge.innerText = `NIK: ${profilSaya.nik || '-'}`;
+
+                    const avatarBox = document.getElementById('profile-avatar-char');
+                    if (profilSaya.foto) {
+                        avatarBox.innerHTML = `<img src="${profilSaya.foto}" alt="Avatar">`;
+                    } else {
+                        avatarBox.innerHTML = profilSaya.nama.charAt(0).toUpperCase();
+                    }
+                }
+            } else {
+                driverAktifSesiIni = "Driver Tamu";
+                document.getElementById('profile-name').innerText = "Driver Tamu";
+                document.getElementById('profile-vehicle').innerText = "Belum Masuk/Daftar";
+                document.getElementById('profile-nik').style.display = "none";
+                document.getElementById('profile-avatar-char').innerHTML = `<i class="fa-solid fa-user"></i>`;
+            }
+        }
+
+        function periksaOrderanMasuk() {
+            const orderanAktif = localStorage.getItem('orderan_ojol');
+            if (!orderanAktif) {
+                document.getElementById('order-box').style.display = 'none';
+                document.getElementById('no-order-txt').style.display = 'block';
+                stopSuaraDering();
+                return;
+            }
+
+            const dataOrder = JSON.parse(orderanAktif);
+            const namaSesi = localStorage.getItem('sesi_driver_nama');
+            const dataDaftarRaw = localStorage.getItem('daftar_driver_sukamara');
+            let jenisKendaraanDriver = "Motor";
+            
+            if (namaSesi && dataDaftarRaw) {
+                const profilSaya = JSON.parse(dataDaftarRaw).find(d => d.nama.toLowerCase() === namaSesi.toLowerCase());
+                if (profilSaya) {
+                    jenisKendaraanDriver = profilSaya.kendaraan;
+                }
+            }
+
+            if (dataOrder.kendaraan.toLowerCase() !== jenisKendaraanDriver.toLowerCase()) {
+                document.getElementById('order-box').style.display = 'none';
+                document.getElementById('no-order-txt').style.display = 'block';
+                stopSuaraDering();
+                return;
+            }
+
+            if (dataOrder.status_order === "mencari" || dataOrder.status_order === "diterima" || dataOrder.status_order === "diantar") {
+                document.getElementById('no-order-txt').style.display = 'none';
+                document.getElementById('order-box').style.display = 'block';
+                
+                document.getElementById('txt-kendaraan').innerText = dataOrder.kendaraan.toUpperCase();
+                document.getElementById('txt-nohp').innerText = dataOrder.nohp;
+                document.getElementById('txt-jemput').innerText = dataOrder.jemput_teks;
+                document.getElementById('txt-tujuan').innerText = dataOrder.tujuan_teks;
+                
+                const jarakTempuh = parseFloat(dataOrder.jarak) || 0;
+                document.getElementById('txt-jarak').innerText = `${jarakTempuh} KM`;
+
+                let tarifPerKM = 0;
+                if (jenisKendaraanDriver.toLowerCase() === "mobil") {
+                    tarifPerKM = parseFloat(document.getElementById('driver-set-mobil').value) || 0;
+                } else {
+                    tarifPerKM = parseFloat(document.getElementById('driver-set-motor').value) || 0;
+                }
+                
+                let totalPendapatan = jarakTempuh * tarifPerKM;
+                document.getElementById('txt-tarif').innerText = `Rp ${totalPendapatan.toLocaleString('id-ID')}`;
+
+                if (dataOrder.status_order === "mencari") {
+                    document.getElementById('btn-accept').style.display = 'block';
+                    document.getElementById('btn-complete').style.display = 'none';
+                    mulaiPutarSuaraDering();
+                } else {
+                    document.getElementById('btn-accept').style.display = 'none';
+                    document.getElementById('btn-complete').style.display = 'block';
+                    stopSuaraDering();
+                }
+            } else {
+                document.getElementById('order-box').style.display = 'none';
+                document.getElementById('no-order-txt').style.display = 'block';
+                stopSuaraDering();
+            }
+        }
+
+        function terimaOrderan() {
+            const orderanAktif = localStorage.getItem('orderan_ojol');
+            if (!orderanAktif) return;
+
+            if (driverAktifSesiIni === "Driver Tamu") {
+                alert("Anda harus melengkapi profil/mendaftar akun terlebih dahulu sebelum menerima pesanan!");
+                toggleModal(true);
+                return;
+            }
+
+            let dataOrder = JSON.parse(orderanAktif);
+            dataOrder.status_order = "diterima";
+            dataOrder.driver_nama = driverAktifSesiIni;
+            
+            const dataDaftarRaw = localStorage.getItem('daftar_driver_sukamara');
+            if (dataDaftarRaw) {
+                const profilSaya = JSON.parse(dataDaftarRaw).find(d => d.nama.toLowerCase() === driverAktifSesiIni.toLowerCase());
+                if (profilSaya) {
+                    dataOrder.driver_nohp = profilSaya.nohp;
+                    dataOrder.driver_plat = profilSaya.plat;
+                    dataOrder.driver_foto = profilSaya.foto || "";
+                }
+            }
+
+            let tarifPerKM = 0;
+            if (dataOrder.kendaraan.toLowerCase() === "mobil") {
+                tarifPerKM = parseFloat(document.getElementById('driver-set-mobil').value) || 0;
+            } else {
+                tarifPerKM = parseFloat(document.getElementById('driver-set-motor').value) || 0;
+            }
+            dataOrder.tarif_total = (parseFloat(dataOrder.jarak) || 0) * tarifPerKM;
+
+            localStorage.setItem('orderan_ojol', JSON.stringify(dataOrder));
+            stopSuaraDering();
+            periksaOrderanMasuk();
+            alert("Pesanan berhasil diterima! Silakan jemput penumpang Anda.");
+        }
+
+        function selesaikanOrderan() {
+            const orderanAktif = localStorage.getItem('orderan_ojol');
+            if (!orderanAktif) return;
+
+            let dataOrder = JSON.parse(orderanAktif);
+            dataOrder.status_order = "selesai";
+
+            // SIMPAN KE DALAM MEMORI RIWAYAT LOKAL DRIVER
+            let riwayatSistem = JSON.parse(localStorage.getItem('riwayat_perjalanan_driver')) || [];
+            riwayatSistem.push({
+                driver: driverAktifSesiIni,
+                layanan: dataOrder.kendaraan,
+                jemput: dataOrder.jemput_teks,
+                tujuan: dataOrder.tujuan_teks,
+                jarak: dataOrder.jarak,
+                tarif: dataOrder.tarif_total,
+                waktu: new Date().toLocaleString('id-ID')
+            });
+            localStorage.setItem('riwayat_perjalanan_driver', JSON.stringify(riwayatSistem));
+
+            localStorage.setItem('orderan_ojol', JSON.stringify(dataOrder));
+            periksaOrderanMasuk();
+            alert("Luar biasa! Pesanan telah selesai diantar sampai tujuan dan masuk ke riwayat.");
+        }
+
+        // ================= LOGIKA RIWAYAT PERJALANAN =================
+        function bukaModalRiwayat() {
+            if (driverAktifSesiIni === "Driver Tamu") {
+                alert("Silakan daftar/masuk akun untuk melihat riwayat perjalanan Anda.");
+                return;
+            }
+            
+            const container = document.getElementById('history-list-container');
+            container.innerHTML = "";
+            
+            let allRiwayat = JSON.parse(localStorage.getItem('riwayat_perjalanan_driver')) || [];
+            // Filter hanya riwayat milik driver yang sedang aktif login
+            let riwayatSaya = allRiwayat.filter(r => r.driver.toLowerCase() === driverAktifSesiIni.toLowerCase());
+            
+            if (riwayatSaya.length === 0) {
+                container.innerHTML = `<p style="text-align:center; font-size:0.85rem; color:#888; padding: 20px 0;">Belum ada riwayat perjalanan yang diselesaikan.</p>`;
+            } else {
+                // Tampilkan dari yang paling baru (reverse)
+                riwayatSaya.reverse().forEach(item => {
+                    container.innerHTML += `
+                        <div class="history-item">
+                            <div>📅 <small>${item.waktu}</small></div>
+                            <div>Layanan: <b>${item.layanan.toUpperCase()}</b> (${item.jarak} KM)</div>
+                            <div>📍 P: <i>${item.jemput}</i></div>
+                            <div>🏁 T: <i>${item.tujuan}</i></div>
+                            <div>💰 Pendapatan: <strong>Rp ${parseInt(item.tarif).toLocaleString('id-ID')}</strong></div>
+                        </div>
+                    `;
+                });
+            }
+            
+            document.getElementById('history-modal').classList.add('active');
+        }
+
+        function tutupModalRiwayat() {
+            document.getElementById('history-modal').classList.remove('active');
+        }
+
+        // ================= LOGIKA LOGIN & DASHBOARD ADMIN =================
+        const PIN_ADMIN_SISTEM = "1234"; // Ganti PIN standard ini sesuai keinginan Anda
+
+        function bukaLoginAdmin() {
+            let inputPin = prompt("Masukkan PIN Keamanan Admin:");
+            if (inputPin === null) return; // Batal
+            
+            if (inputPin === PIN_ADMIN_SISTEM) {
+                bukaPanelAdmin();
+            } else {
+                alert("PIN Admin Salah! Akses ditolak.");
+            }
+        }
+
+        function bukaPanelAdmin() {
+            const tbody = document.getElementById('admin-driver-list');
+            tbody.innerHTML = "";
+            
+            let daftarDriver = JSON.parse(localStorage.getItem('daftar_driver_sukamara')) || [];
+            
+            if (daftarDriver.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999;">Tidak ada driver terdaftar</td></tr>`;
+            } else {
+                daftarDriver.forEach((drv, index) => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><b>${drv.nama}</b><br><small>${drv.plat}</small></td>
+                            <td><span style="font-family:monospace;">${drv.nik}</span></td>
+                            <td>${drv.kendaraan}</td>
+                            <td>
+                                <button class="btn-delete-driver" onclick="adminHapusDriver('${drv.nama}')">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+            document.getElementById('admin-modal').classList.add('active');
+        }
+
+        function adminHapusDriver(namaDriver) {
+            if (confirm(`Apakah Anda yakin ingin menghapus akun driver "${namaDriver}" dari sistem?`)) {
+                let daftarDriver = JSON.parse(localStorage.getItem('daftar_driver_sukamara')) || [];
+                daftarDriver = daftarDriver.filter(d => d.nama.toLowerCase() !== namaDriver.toLowerCase());
+                localStorage.setItem('daftar_driver_sukamara', JSON.stringify(daftarDriver));
+                
+                // Jika driver yang sedang login dihapus admin, paksa logout
+                const namaSesi = localStorage.getItem('sesi_driver_nama');
+                if (namaSesi && namaSesi.toLowerCase() === namaDriver.toLowerCase()) {
+                    localStorage.removeItem('sesi_driver_nama');
+                }
+                
+                muatProfilDriver();
+                bukaPanelAdmin(); // Segarkan data tabel admin
+                alert(`Akun ${namaDriver} berhasil dihapus.`);
+            }
+        }
+
+        function tutupPanelAdmin() {
+            document.getElementById('admin-modal').classList.remove('active');
+        }
+
+        function hapusSemuaDriverLokal() {
+            if (confirm("Apakah Anda yakin ingin membersihkan memori cache sistem? Semua data pendaftaran driver di HP ini akan terhapus.")) {
+                localStorage.clear();
+                alert("Memori berhasil dibersihkan! Halaman akan dimuat ulang.");
+                location.reload();
+            }
+        }
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'orderan_ojol') {
+                periksaOrderanMasuk();
+            }
+        });
+
+        setInterval(periksaOrderanMasuk, 2500);
+
+        window.onload = function() {
+            muatTarifAwal();
+            muatProfilDriver();
+            periksaOrderanMasuk();
+        };
+    </script>
+</body>
+</html>

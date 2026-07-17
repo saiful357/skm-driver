@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Shopee Ride | Sukamara</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Leaflet Map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        * { 
+            box-sizing: border-box; 
+            font-family: 'Inter', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+        }
+        body { 
+            background-color: #f5f5f5; 
+            color: #222222; 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+        
+        /* Container Mockup HP */
+        #phone-container { 
+            width: 100%; 
+            max-width: 480px; 
+            background: #f5f5f5; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+            padding-bottom: 80px; /* Ruang untuk bottom bar */
+        }
+
+        /* Shopee Header */
+        .shopee-header {
+            background: linear-gradient(90deg, #ff5722, #ee4d2d);
+            color: white;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .header-left i {
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .header-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .header-right i {
+            font-size: 1.2rem;
+            margin-left: 15px;
+            cursor: pointer;
+        }
+
+        /* Konten Utama */
+        .content {
+            padding: 12px;
+        }
+
+        /* Alamat & Lokasi Card */
+        .card-address {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .address-row {
+            display: flex;
+            gap: 12px;
+            position: relative;
+        }
+        .address-icons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+        .icon-dot-green {
+            width: 12px;
+            height: 12px;
+            background: #26a17b;
+            border-radius: 50%;
+        }
+        .icon-line {
+            flex-grow: 1;
+            width: 1.5px;
+            background: #e5e5e5;
+            margin: 6px 0;
+            border-style: dashed;
+        }
+        .icon-dot-orange {
+            width: 12px;
+            height: 12px;
+            background: #ee4d2d;
+            border-radius: 50%;
+        }
+        .address-inputs {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .input-box {
+            border: none;
+            background: none;
+            outline: none;
+            font-size: 0.9rem;
+            color: #333;
+            width: 100%;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .input-box:focus {
+            border-bottom-color: #ee4d2d;
+        }
+
+        /* Peta Card */
+        .card-map {
+            background: white;
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        #map {
+            height: 200px;
+            width: 100%;
+            border-radius: 8px;
+            z-index: 1;
+        }
+        .btn-gps {
+            width: 100%;
+            background: #fff;
+            border: 1px solid #ee4d2d;
+            color: #ee4d2d;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-gps:active {
+            background: #ffeeea;
+        }
+
+        /* Layanan Kendaraan (Shopee Style Grid) */
+        .service-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #666;
+            margin: 4px 0 10px 4px;
+            text-transform: uppercase;
+        }
+        .services-grid {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .service-card {
+            flex: 1;
+            background: white;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            border: 2px solid transparent;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            position: relative;
+            transition: 0.2s;
+        }
+        .service-card.active {
+            border-color: #ee4d2d;
+            background: #fffcfb;
+        }
+        .service-card i {
+            font-size: 1.5rem;
+            color: #555;
+            margin-bottom: 6px;
+        }
+        .service-card.active i {
+            color: #ee4d2d;
+        }
+        .service-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #333;
+        }
+        .service-tag {
+            position: absolute;
+            top: -8px;
+            right: 4px;
+            background: #ff5722;
+            color: white;
+            font-size: 0.6rem;
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        /* Card Form Tambahan */
+        .card-form {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f8f8f8;
+        }
+        .form-row:last-child {
+            border-bottom: none;
+        }
+        .form-label {
+            font-size: 0.9rem;
+            color: #555;
+            font-weight: 500;
+        }
+        .form-value-input {
+            border: none;
+            outline: none;
+            text-align: right;
+            font-size: 0.9rem;
+            color: #333;
+            font-weight: 600;
+            background: none;
+        }
+        .form-select {
+            border: none;
+            outline: none;
+            background: none;
+            color: #ee4d2d;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align-last: right;
+            direction: rtl;
+        }
+
+        /* Sticky Bottom Bar (Checkout Style) */
+        .sticky-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+            display: flex;
+            height: 65px;
+            z-index: 1000;
+        }
+        .price-section {
+            flex: 1.2;
+            padding-left: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .price-label {
+            font-size: 0.75rem;
+            color: #888;
+        }
+        .price-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ee4d2d;
+        }
+        .btn-checkout {
+            flex: 1;
+            background: #ee4d2d;
+            color: white;
+            border: none;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .btn-checkout:active {
+            background: #d73c1f;
+        }
+
+        #status-box {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            color: #b45309;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            font-weight: 600;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="phone-container">
+        
+        <!-- HEADER SHOPEE -->
+        <div class="shopee-header">
+            <div class="header-left">
+                <i class="fa-solid fa-arrow-left"></i>
+                <div class="header-title">OJEK SUKAMARA</div>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <!-- STATUS BOX -->
+            <div id="status-box">Mencari Driver...</div>
+
+            <!-- CARD ALAMAT (Pickup & Dropoff) -->
+            <div class="card-address">
+                <div class="address-row">
+                    <div class="address-icons">
+                        <div class="icon-dot-green"></div>
+                        <div class="icon-line"></div>
+                        <div class="icon-dot-orange"></div>
+                    </div>
+                    <div class="address-inputs">
+                        <div>
+                            <span style="font-size: 0.7rem; color: #888; font-weight: bold;">JEMPUT DI</span>
+                            <input type="text" id="pickup" class="input-box" readonly placeholder="Mengambil lokasi GPS...">
+                        </div>
+                        <div>
+                            <span style="font-size: 0.7rem; color: #888; font-weight: bold;">ANTAR KE</span>
+                            <input type="text" id="dropoff" class="input-box" readonly placeholder="Geser pin merah di peta...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD PETA -->
+            <div class="card-map">
+                <div id="map"></div>
+                <button class="btn-gps" onclick="temukanLokasiSaya()">
+                    <i class="fa-solid fa-location-crosshairs"></i> Gunakan Lokasi Saya Sekarang
+                </button>
+            </div>
+
+            <!-- LAYANAN KENDARAAN -->
+            <div class="service-title">Pilih Transportasi</div>
+            <div class="services-grid">
+                <div class="service-card active" id="card-motor" onclick="pilihLayanan('Motor')">
+                    <div class="service-tag">Hemat</div>
+                    <i class="fa-solid fa-motorcycle"></i>
+                    <div class="service-name">Shopee Motor</div>
+                </div>
+                <div class="service-card" id="card-mobil" onclick="pilihLayanan('Mobil')">
+                    <i class="fa-solid fa-car"></i>
+                    <div class="service-name">Shopee Mobil</div>
+                </div>
+            </div>
+
+            <!-- CARD DETAIL TAMBAHAN -->
+            <div class="card-form">
+                <div class="form-row">
+                    <span class="form-label"><i class="fa-solid fa-phone" style="color: #888; margin-right: 6px;"></i> No. HP Kamu</span>
+                    <input type="tel" id="nohp" class="form-value-input" placeholder="Masukkan nomor HP" style="text-align: right; width: 150px;">
+                </div>
+                <div class="form-row">
+                    <span class="form-label"><i class="fa-solid fa-route" style="color: #888; margin-right: 6px;"></i> Jarak Rute</span>
+                    <span style="font-weight: 700;" id="txt-jarak">0 KM</span>
+                </div>
+                <div class="form-row">
+                    <span class="form-label"><i class="fa-solid fa-user-tie" style="color: #888; margin-right: 6px;"></i> Pilih Driver</span>
+                    <select id="pilih-driver" class="form-select">
+                        <option value="Semua Driver">Otomatis (Terdekat)</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- STICKY BOTTOM BAR -->
+        <div class="sticky-bottom">
+            <div class="price-section">
+                <span class="price-label">Total Pembayaran</span>
+                <span class="price-value" id="txt-total">Rp 0</span>
+            </div>
+            <button class="btn-checkout" onclick="simulasiPesan()">Pesan Sekarang</button>
+        </div>
+
+    </div>
+
+    <!-- Leaflet Map JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Logic Script -->
+    <script>
+        let infoTarifGlobal = 0;
+        let infoJarakGlobal = 0;
+        let cekStatusInterval = null;
+        let map, markerJemput, markerTujuan;
+        let jenisLayananAktif = "Motor";
+
+        // Koordinat Default Tengah Kota Sukamara
+        const sukamaraPusat = [-2.6277, 111.2418];
+
+        // 1. Inisialisasi Peta Leaflet
+        function initMap() {
+            map = L.map('map', {zoomControl: false}).setView(sukamaraPusat, 14);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap'
+            }).addTo(map);
+
+            const greenIcon = new L.Icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            });
+
+            const redIcon = new L.Icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            });
+
+            // Spawn Marker Awal
+            markerJemput = L.marker([-2.6240, 111.2400], {icon: greenIcon, draggable: true}).addTo(map);
+            markerTujuan = L.marker([-2.6320, 111.2460], {icon: redIcon, draggable: true}).addTo(map);
+
+            markerJemput.on('dragend', updateSistemKoordinat);
+            markerTujuan.on('dragend', updateSistemKoordinat);
+
+            temukanLokasiSaya();
+        }
+
+        // 2. Fungsi Tombol Pemilih Layanan (Shopee Style Grid)
+        function pilihLayanan(jenis) {
+            jenisLayananAktif = jenis;
+            
+            document.getElementById('card-motor').classList.remove('active');
+            document.getElementById('card-mobil').classList.remove('active');
+
+            if (jenis === "Motor") {
+                document.getElementById('card-motor').classList.add('active');
+            } else {
+                document.getElementById('card-mobil').classList.add('active');
+            }
+
+            updateTarifSaja();
+        }
+
+        // 3. FUNGSI GPS
+        function temukanLokasiSaya() {
+            if (!navigator.geolocation) {
+                alert("Browser kamu tidak mendukung GPS.");
+                updateSistemKoordinat();
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+
+                    markerJemput.setLatLng([lat, lng]);
+                    map.setView([lat, lng], 15);
+                    updateSistemKoordinat();
+                },
+                (error) => {
+                    alert("Akses lokasi ditolak. Silakan geser pin hijau secara manual.");
+                    updateSistemKoordinat();
+                },
+                { enableHighAccuracy: true, timeout: 5000 }
+            );
+        }
+
+        // 4. Perbarui koordinat rute
+        function updateSistemKoordinat() {
+            const posJemput = markerJemput.getLatLng();
+            const posTujuan = markerTujuan.getLatLng();
+
+            cariNamaAlamat(posJemput.lat, posJemput.lng, 'pickup');
+            cariNamaAlamat(posTujuan.lat, posTujuan.lng, 'dropoff');
+
+            hitungRuteOSRM(posJemput.lat, posJemput.lng, posTujuan.lat, posTujuan.lng);
+        }
+
+        // 5. Reverse Geocode
+        function cariNamaAlamat(lat, lng, targetId) {
+            const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
+            
+            fetch(url, { headers: { 'Accept-Language': 'id' } })
+                .then(res => res.json())
+                .then(data => {
+                    const namaAlamat = data.display_name ? data.display_name.split(',').slice(0, 3).join(',') : `Koordinat: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                    document.getElementById(targetId).value = namaAlamat;
+                })
+                .catch(() => {
+                    document.getElementById(targetId).value = `Koordinat: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                });
+        }
+
+        // 6. Hitung rute jalan dengan OSRM
+        function hitungRuteOSRM(lat1, lng1, lat2, lng2) {
+            const urlOSRM = `https://router.project-osrm.org/route/v1/driving/${lng1},${lat1};${lng2},${lat2}?overview=false`;
+
+            fetch(urlOSRM)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === "Ok" && data.routes.length > 0) {
+                        const jarakMeter = data.routes[0].distance;
+                        infoJarakGlobal = (jarakMeter / 1000).toFixed(1);
+                        document.getElementById('txt-jarak').innerText = `${infoJarakGlobal} KM`;
+                        updateTarifSaja();
+                    } else {
+                        hitungJarakGarisLurus(lat1, lng1, lat2, lng2);
+                    }
+                })
+                .catch(() => {
+                    hitungJarakGarisLurus(lat1, lng1, lat2, lng2);
+                });
+        }
+
+        // 7. Hitung jarak garis lurus (cadangan)
+        function hitungJarakGarisLurus(lat1, lon1, lat2, lon2) {
+            const R = 6371; 
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            infoJarakGlobal = (R * c * 1.3).toFixed(1);
+            
+            document.getElementById('txt-jarak').innerText = `${infoJarakGlobal} KM`;
+            updateTarifSaja();
+        }
+
+        // 8. Hitung Tarif Real-time
+        function updateTarifSaja() {
+            let tarifPerKm = jenisLayananAktif === "Motor" 
+                ? parseInt(localStorage.getItem('config_tarif_motor') || "10000")
+                : parseInt(localStorage.getItem('config_tarif_mobil') || "20000");
+
+            infoTarifGlobal = Math.round(infoJarakGlobal * tarifPerKm);
+            if (infoTarifGlobal < 5000) infoTarifGlobal = 5000;
+
+            document.getElementById('txt-total').innerText = `Rp ${infoTarifGlobal.toLocaleString('id-ID')}`;
+        }
+
+        // 9. Load Driver
+        function muatDriverDinamis() {
+            const selectDriver = document.getElementById('pilih-driver');
+            const dataDaftarRaw = localStorage.getItem('daftar_driver_sukamara');
+            const nilaiLama = selectDriver.value;
+            
+            selectDriver.innerHTML = '<option value="Semua Driver">Otomatis (Terdekat)</option>';
+            if (dataDaftarRaw) {
+                const listDriver = JSON.parse(dataDaftarRaw);
+                listDriver.forEach(profil => {
+                    const optBaru = document.createElement('option');
+                    optBaru.value = profil.nama;
+                    optBaru.innerText = `${profil.nama}`;
+                    selectDriver.appendChild(optBaru);
+                });
+            }
+            if (nilaiLama) selectDriver.value = nilaiLama;
+        }
+
+        // 10. Simulasi kirim pesanan
+        function simulasiPesan() {
+            const noHpInput = document.getElementById('nohp').value.trim();
+            const lokasiJemput = document.getElementById('pickup').value.trim();
+            const lokasiTujuan = document.getElementById('dropoff').value.trim();
+
+            if (!noHpInput) {
+                alert("Harap masukkan nomor HP kamu!");
+                return;
+            }
+            if (!lokasiJemput || !lokasiTujuan) { 
+                alert("Harap pastikan koordinat jemput & tujuan sudah benar di peta!"); 
+                return; 
+            }
+
+            const dataOrderan = { 
+                nohp: noHpInput,
+                kendaraan: jenisLayananAktif,
+                driver: document.getElementById('pilih-driver').value,
+                jemput_teks: lokasiJemput, 
+                tujuan_teks: lokasiTujuan,
+                jarak: infoJarakGlobal, 
+                tarif: infoTarifGlobal,
+                status_order: "mencari",
+                timestamp: Date.now()
+            };
+            
+            localStorage.setItem('orderan_ojol', JSON.stringify(dataOrderan));
+            
+            const sBox = document.getElementById('status-box');
+            sBox.style.display = "block";
+            sBox.innerText = "Mencari Driver... Mohon tunggu.";
+            sBox.scrollIntoView({ behavior: 'smooth' });
+
+            if (cekStatusInterval) clearInterval(cekStatusInterval);
+            cekStatusInterval = setInterval(periksaStatusOrderan, 1000);
+        }
+
+        function periksaStatusOrderan() {
+            const dataMaju = JSON.parse(localStorage.getItem('orderan_ojol'));
+            const sBox = document.getElementById('status-box');
+            if (!dataMaju) {
+                if (cekStatusInterval) clearInterval(cekStatusInterval);
+                sBox.innerText = "Pesanan Selesai! Terima Kasih.";
+                setTimeout(() => location.reload(), 2000);
+            } else if (dataMaju.status_order === "diterima") {
+                sBox.innerHTML = `🧡 Driver <b>${dataMaju.driver_asli}</b> mengonfirmasi pesananmu!<br>Mohon tunggu siap-siap di lokasi jemput.`;
+                sBox.style.background = "#f0fdf4";
+                sBox.style.color = "#15803d";
+                sBox.style.borderLeftColor = "#16a34a";
+            }
+        }
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'config_tarif_motor' || e.key === 'config_tarif_mobil') {
+                updateTarifSaja();
+            }
+            if (e.key === 'orderan_ojol') {
+                periksaStatusOrderan();
+            }
+        });
+
+        // Jalankan Peta & Driver
+        initMap();
+        muatDriverDinamis();
+        setInterval(muatDriverDinamis, 3000);
+    </script>
+</body>
+</html>
