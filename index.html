@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
-    <!-- Tambahkan juga tema warna untuk bar atas browser HP -->
+    <!-- Tema warna untuk bar atas browser HP -->
     <meta name="theme-color" content="#000000">
     <!-- Leaflet Map CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -38,8 +38,8 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.05);
             padding-bottom: 80px; /* Ruang untuk bottom bar */
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
         }
 
         /* Shopee Header */
@@ -66,11 +66,6 @@
         .header-title {
             font-weight: 600;
             font-size: 1.1rem;
-        }
-        .header-right i {
-            font-size: 1.2rem;
-            margin-left: 15px;
-            cursor: pointer;
         }
 
         /* Konten Utama */
@@ -269,7 +264,37 @@
             direction: rtl;
         }
 
-        /* Sticky Bottom Bar (Checkout Style) */
+        /* Tombol Install Kustom */
+        .install-box {
+            background: #fff3e0;
+            border: 2px dashed #ee4d2d;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            text-align: center;
+            display: none; /* Hanya muncul lewat Javascript jika didukung */
+        }
+        .btn-install-action {
+            background: #ee4d2d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-install-action:active {
+            background: #d73c1f;
+        }
+
+        /* Sticky Bottom Bar */
         .sticky-bottom {
             position: absolute;
             bottom: 0;
@@ -343,6 +368,17 @@
 
             <!-- STATUS BOX -->
             <div id="status-box">Mencari Driver...</div>
+
+            <!-- CARD TOMBOL INSTALASI KUSTOM -->
+            <div class="install-box" id="pwa-install-card">
+                <p style="font-size: 0.9rem; font-weight: 700; color: #ee4d2d;">
+                    <i class="fa-solid fa-mobile-screen-button"></i> Pasang Aplikasi Shopee Ride!
+                </p>
+                <p style="font-size: 0.75rem; color: #555; margin-top: 4px;">Akses lebih cepat & hemat kuota langsung dari layar HP kamu.</p>
+                <button class="btn-install-action" id="pwa-install-btn">
+                    <i class="fa-solid fa-cloud-arrow-down"></i> PASANG SEKARANG
+                </button>
+            </div>
 
             <!-- CARD ALAMAT (Pickup & Dropoff) -->
             <div class="card-address">
@@ -429,10 +465,8 @@
         let map, markerJemput, markerTujuan;
         let jenisLayananAktif = "Motor";
 
-        // Koordinat Default Tengah Kota Sukamara
         const sukamaraPusat = [-2.6277, 111.2418];
 
-        // 1. Inisialisasi Peta Leaflet
         function initMap() {
             map = L.map('map', {zoomControl: false}).setView(sukamaraPusat, 14);
 
@@ -458,7 +492,6 @@
                 shadowSize: [41, 41]
             });
 
-            // Spawn Marker Awal
             markerJemput = L.marker([-2.6240, 111.2400], {icon: greenIcon, draggable: true}).addTo(map);
             markerTujuan = L.marker([-2.6320, 111.2460], {icon: redIcon, draggable: true}).addTo(map);
 
@@ -468,7 +501,6 @@
             temukanLokasiSaya();
         }
 
-        // 2. Fungsi Tombol Pemilih Layanan (Shopee Style Grid)
         function pilihLayanan(jenis) {
             jenisLayananAktif = jenis;
             
@@ -484,7 +516,6 @@
             updateTarifSaja();
         }
 
-        // 3. FUNGSI GPS
         function temukanLokasiSaya() {
             if (!navigator.geolocation) {
                 alert("Browser kamu tidak mendukung GPS.");
@@ -509,7 +540,6 @@
             );
         }
 
-        // 4. Perbarui koordinat rute
         function updateSistemKoordinat() {
             const posJemput = markerJemput.getLatLng();
             const posTujuan = markerTujuan.getLatLng();
@@ -520,7 +550,6 @@
             hitungRuteOSRM(posJemput.lat, posJemput.lng, posTujuan.lat, posTujuan.lng);
         }
 
-        // 5. Reverse Geocode
         function cariNamaAlamat(lat, lng, targetId) {
             const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
             
@@ -535,7 +564,6 @@
                 });
         }
 
-        // 6. Hitung rute jalan dengan OSRM
         function hitungRuteOSRM(lat1, lng1, lat2, lng2) {
             const urlOSRM = `https://router.project-osrm.org/route/v1/driving/${lng1},${lat1};${lng2},${lat2}?overview=false`;
 
@@ -556,7 +584,6 @@
                 });
         }
 
-        // 7. Hitung jarak garis lurus (cadangan)
         function hitungJarakGarisLurus(lat1, lon1, lat2, lon2) {
             const R = 6371; 
             const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -571,7 +598,6 @@
             updateTarifSaja();
         }
 
-        // 8. Hitung Tarif Real-time
         function updateTarifSaja() {
             let tarifPerKm = jenisLayananAktif === "Motor" 
                 ? parseInt(localStorage.getItem('config_tarif_motor') || "10000")
@@ -583,7 +609,6 @@
             document.getElementById('txt-total').innerText = `Rp ${infoTarifGlobal.toLocaleString('id-ID')}`;
         }
 
-        // 9. Load Driver
         function muatDriverDinamis() {
             const selectDriver = document.getElementById('pilih-driver');
             const dataDaftarRaw = localStorage.getItem('daftar_driver_sukamara');
@@ -602,7 +627,6 @@
             if (nilaiLama) selectDriver.value = nilaiLama;
         }
 
-        // 10. Simulasi kirim pesanan
         function simulasiPesan() {
             const noHpInput = document.getElementById('nohp').value.trim();
             const lokasiJemput = document.getElementById('pickup').value.trim();
@@ -664,23 +688,59 @@
             }
         });
 
-        // Jalankan Peta & Driver
         initMap();
         muatDriverDinamis();
         setInterval(muatDriverDinamis, 3000);
     </script>
 
-    <!-- ========================================== -->
-    <!-- PENDAFTARAN SERVICE WORKER (PWA) DI SINI -->
-    <!-- ========================================== -->
+    <!-- ============================================== -->
+    <!-- LOGIKA INSTALASI PWA & REGISTER SERVICE WORKER -->
+    <!-- ============================================== -->
     <script>
+        // 1. Register Service Worker (sw.js)
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('Service Worker terdaftar dengan sukses!', reg.scope))
+                    .then(reg => console.log('Service Worker aktif!', reg.scope))
                     .catch(err => console.error('Pendaftaran Service Worker gagal:', err));
             });
         }
+
+        // 2. Tangkap Event Prompt PWA
+        let deferredPrompt;
+        const installCard = document.getElementById('pwa-install-card');
+        const installBtn = document.getElementById('pwa-install-btn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Blokir prompt bawaan Chrome yang berantakan
+            e.preventDefault();
+            // Simpan event instalasi ke variabel
+            deferredPrompt = e;
+            // Tampilkan kartu instalasi buatan sendiri ke pengguna
+            installCard.style.display = 'block';
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            
+            // Picu prompt instalasi resmi dari sistem browser
+            deferredPrompt.prompt();
+            
+            // Tunggu pilihan respon pengguna
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`Pengguna memilih aksi: ${outcome}`);
+            
+            // Reset prompt karena hanya berlaku sekali aksi
+            deferredPrompt = null;
+            // Sembunyikan kembali kartu instalasi
+            installCard.style.display = 'none';
+        });
+
+        // Sembunyikan otomatis jika aplikasi sudah sukses terinstal
+        window.addEventListener('appinstalled', () => {
+            console.log('Terima kasih! Aplikasi telah sukses dipasang di layar HP.');
+            installCard.style.display = 'none';
+        });
     </script>
 
 </body>
